@@ -1,0 +1,106 @@
+-- CREATE
+
+INSERT INTO Companies (company_name)
+VALUES ("SQL Academy");
+
+INSERT INTO Categories (category_name)
+VALUES ("Instructionals");
+
+INSERT INTO Products (company_id, product_name, price, description)
+VALUES (1, "Intro to SQL", 20, "Obtain a general understanding of SQL!");
+
+INSERT INTO Warranties (product_id, warranty_months)
+VALUES (1, "September 2028");
+
+INSERT INTO ProductsCategoriesXref (category_id)
+VALUES (1);
+
+-- READ
+
+SELECT *
+FROM Companies;
+
+SELECT *
+FROM Categories;
+
+SELECT *
+FROM Products;
+
+SELECT *
+FROM Warranties;
+
+SELECT *
+FROM Products
+WHERE active = True;
+
+SELECT *
+FROM Products
+WHERE company_id = 1;
+
+SELECT company_name
+FROM Companies
+WHERE company_id = 1;
+
+SELECT *
+FROM Products p
+JOIN ProductsCategoriesXref pcx ON p.product_id = pcx.product_id
+JOIN Categories c ON pcx.category_id = c.category_id
+WHERE category_name = "Instructionals";
+
+SELECT p.product_name, w.warranty_id, c.category_name
+FROM Warranties w
+JOIN Products p ON w.product_id = p.product_id
+JOIN ProductsCategoriesXref pcx ON p.product_id = pcx.product_id
+JOIN Categories c ON pcx.category_id = c.category_id
+WHERE p.product_id = 1;
+
+SELECT warranty_months
+FROM Warranties
+WHERE warranty_id = 1;
+
+
+-- UPDATE
+
+UPDATE Companies
+SET company_name = "PSQL Institute"
+WHERE company_id = 1;
+
+UPDATE Categories
+SET category_name = "Academics"
+WHERE category_id = 1;
+
+UPDATE Products
+SET product_name = "PSQL 101", price = 10
+WHERE product_id = 1;
+
+UPDATE Warranties
+SET warranty_months = "January 2030"
+WHERE warranty_id = 1;
+
+UPDATE ProductsCategoriesXref
+SET category_id = 2
+WHERE product_id = 1;
+
+
+-- DELETE
+
+BEGIN TRANSACTION
+DELETE FROM ProductsCategoriesXref WHERE product_id = 1;
+DELETE FROM Warranties WHERE product_id = 1;
+DELETE FROM Products WHERE product_id = 1;
+COMMIT;
+
+BEGIN TRANSACTION
+DELETE FROM ProductsCategoriesXref WHERE category_id = 1;
+DELETE FROM Categories WHERE category_id = 1;
+COMMIT;
+
+BEGIN TRANSACTION
+DELETE FROM ProductsCategoriesXref WHERE product_id IN (SELECT product_id FROM Products WHERE company_id = 1);
+DELETE FROM Products WHERE company_id = 1;
+DELETE FROM Companies WHERE company_id = 1;
+COMMIT;
+
+BEGIN TRANSACTION
+DELETE FROM Warranties WHERE warranty_id = 1;
+COMMIT;
